@@ -120,6 +120,9 @@ public class Player : MonoBehaviour
                 float totalSpeed = speed + currentSpeed * 50;
                 rb.velocity = new Vector3(0, 0, 0);
                 rb.AddForce(toHit.normalized * totalSpeed);
+                Rigidbody hitRB = hit.transform.GetComponent<Rigidbody>();
+                hitRB.velocity = new Vector3(0, 0, 0);
+                hitRB.AddForce(-toHit.normalized * totalSpeed);
             }
             
         }
@@ -136,6 +139,9 @@ public class Player : MonoBehaviour
             float totalSpeed = speed + currentSpeed * 50;
             rb.velocity = new Vector3(0, 0, 0);
             rb.AddForce(toHit.normalized * totalSpeed);
+            Rigidbody hitRB = hit.transform.GetComponent<Rigidbody>();
+            hitRB.velocity = new Vector3(0, 0, 0);
+            hitRB.AddForce(-toHit.normalized * totalSpeed);
         }
     }
 }
