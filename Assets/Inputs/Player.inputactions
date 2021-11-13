@@ -20,6 +20,14 @@
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Reverse-Camera",
+                    "type": "Button",
+                    "id": "96ea92a5-4b5a-461a-bbcc-23f18a4fd28e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -110,6 +118,17 @@
                     "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "1a99e6fb-680d-40a3-87fb-86a916eedb6f",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reverse-Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
