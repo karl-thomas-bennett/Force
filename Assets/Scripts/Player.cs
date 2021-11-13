@@ -10,9 +10,16 @@ public class Player : MonoBehaviour
     private InputAction tiltAction;
     private InputAction rollAction;
     private InputAction reverseAction;
+    private InputAction mousePositionAction;
+    private InputAction pullAction;
+    private InputAction pushAction;
     private Rigidbody rb;
+
+    public float speed;
+
     public Vector2 tilt;
     public float roll;
+    public Vector2 mousePosition;
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -29,6 +36,15 @@ public class Player : MonoBehaviour
         reverseAction = playerInput.actions["Reverse-Camera"];
         reverseAction.started += Reverse;
         reverseAction.canceled += Forward;
+
+        mousePositionAction = playerInput.actions["Mouse"];
+        mousePositionAction.performed += UpdateMousePosition;
+
+        pullAction = playerInput.actions["Pull"];
+        pullAction.started += Pull;
+
+        pushAction = playerInput.actions["Push"];
+        pushAction.started += Push;
     }
 
     private void OnDisable()
@@ -41,6 +57,9 @@ public class Player : MonoBehaviour
 
         reverseAction.started -= Reverse;
         reverseAction.canceled -= Forward;
+
+        pullAction.started -= Pull;
+        pushAction.started -= Push;
     }
 
     void Start()
@@ -81,5 +100,48 @@ public class Player : MonoBehaviour
     private void Roll(InputAction.CallbackContext context)
     {
         roll = context.ReadValue<float>();
+    }
+
+    private void UpdateMousePosition(InputAction.CallbackContext context)
+    {
+        mousePosition = context.ReadValue<Vector2>();
+    }
+
+    private void Pull(InputAction.CallbackContext context)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 toHit = hit.transform.position - transform.position;
+            if(toHit.magnitude > 3)
+            {
+                float currentSpeed = rb.velocity.magnitude;
+                float totalSpeed = speed + currentSpeed * 50;
+                rb.velocity = new Vector3(0, 0, 0);
+                rb.AddForce(toHit.normalized * totalSpeed);
+                Rigidbody hitRB = hit.transform.GetComponent<Rigidbody>();
+                hitRB.velocity = new Vector3(0, 0, 0);
+                hitRB.AddForce(-toHit.normalized * totalSpeed);
+            }
+            
+        }
+    }
+
+    private void Push(InputAction.CallbackContext context)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 toHit = transform.position - hit.transform.position;
+            float currentSpeed = rb.velocity.magnitude;
+            float totalSpeed = speed + currentSpeed * 50;
+            rb.velocity = new Vector3(0, 0, 0);
+            rb.AddForce(toHit.normalized * totalSpeed);
+            Rigidbody hitRB = hit.transform.GetComponent<Rigidbody>();
+            hitRB.velocity = new Vector3(0, 0, 0);
+            hitRB.AddForce(-toHit.normalized * totalSpeed);
+        }
     }
 }
