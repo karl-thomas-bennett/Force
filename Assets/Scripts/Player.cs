@@ -43,8 +43,8 @@ public class Player : MonoBehaviour
         pullAction = playerInput.actions["Pull"];
         pullAction.started += Pull;
 
-        //pushAction = playerInput.actions["Push"];
-        //pushAction.started += Push;
+        pushAction = playerInput.actions["Push"];
+        pushAction.started += Push;
     }
 
     private void OnDisable()
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
         reverseAction.canceled -= Forward;
 
         pullAction.started -= Pull;
-        //pushAction.started -= Push;
+        pushAction.started -= Push;
     }
 
     void Start()
@@ -109,11 +109,9 @@ public class Player : MonoBehaviour
 
     private void Pull(InputAction.CallbackContext context)
     {
-        // Does the ray intersect any objects excluding the player layer
-        RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 toHit = hit.transform.position - transform.position;
             if(toHit.magnitude > 3)
@@ -129,6 +127,15 @@ public class Player : MonoBehaviour
 
     private void Push(InputAction.CallbackContext context)
     {
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
 
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 toHit = transform.position - hit.transform.position;
+            float currentSpeed = rb.velocity.magnitude;
+            float totalSpeed = speed + currentSpeed * 50;
+            rb.velocity = new Vector3(0, 0, 0);
+            rb.AddForce(toHit.normalized * totalSpeed);
+        }
     }
 }
